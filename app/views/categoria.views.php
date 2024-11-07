@@ -1,5 +1,4 @@
 <?php
-
 class CategoriaApiView{
     public function response($data, $status) {
         header("Content-Type: application/json");
@@ -11,7 +10,7 @@ class CategoriaApiView{
         $status = array(
             200 => "OK",
             201 => "Created",
-            401 => "Not created",
+            400 => "Bad Request",
             404 => "Not found",
             500 => "Internal Server Error"
           );
