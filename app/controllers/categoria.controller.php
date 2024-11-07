@@ -97,5 +97,38 @@ class CategoriaApiController{
 
     }
 
+    public function paginarCategoria($req) {
+        $maximoPag = $req->body->cantidad;
+        $pagina = $req->body->pagina;
+        
+        $categorias = $this->model->getCategorias();
+        $cantidadTotal = count($categorias);
+    
+        $totalPaginas = ceil($cantidadTotal / $maximoPag); //paginas totales para establecer los limites
+    
+        //ver que la pagina este en los limites
+        if ($pagina < 1) {
+            $pagina = 1;
+        } elseif ($pagina > $totalPaginas) {
+            $pagina = $totalPaginas;
+        }
+    
+        $offset = ($pagina - 1) * $maximoPag; //Calcula el índice desde donde empezar a extraer elementos para la página solicitada
+    
+        $categoriasPaginadas = array_slice($categorias, $offset, $maximoPag);
+
+        $respuesta = [
+            'data' => $categoriasPaginadas,
+            'Paginacion' => [
+                'Pagina' => $pagina,
+                'Total de paginas' => $totalPaginas,
+                'Datos por Pagina' => $maximoPag,
+                'Total de paginas' => $cantidadTotal,
+            ]
+        ];
+    
+        return $this->view->response($respuesta, 200);
+    }
+    
 
 }
