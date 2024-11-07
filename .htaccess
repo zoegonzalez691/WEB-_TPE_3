@@ -1,10 +1,31 @@
 <IfModule mod_rewrite.c>
-	RewriteEngine On
-    RewriteCond %{REQUEST_FILENAME} -f [OR]
-    RewriteCond %{REQUEST_FILENAME} -d
-
-    RewriteRule \.(?:css|js|jpe?g|gif|png)$ - [L]
-
-    RewriteRule ^api/(.*)$ router.php?resource=$1 [QSA,L]
-
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^api/(.*)$ router.php?resource=$1 [QSA,L]
+  
 </IfModule>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+   
+
+
+
+
