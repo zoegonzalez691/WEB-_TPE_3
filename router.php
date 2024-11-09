@@ -10,6 +10,7 @@ $router->addRoute('categorias','POST','CategoriaApiController','crearCategoria')
 $router->addRoute('categoria/:id','GET','CategoriaApiController','getCategoria');
 $router->addRoute('categoria/:id','DELETE','CategoriaApiController','eliminarCategoria');
 $router->addRoute('categoria/:id','PUT','CategoriaApiController','editarCategoria');
+$router->addRoute('categoriasPag','POST', 'CategoriaApiController', 'paginarCategoria');
 
 //productos
 $router->addRoute('productos',      'GET',      'ProductosApiController',    'obtenerProductos');

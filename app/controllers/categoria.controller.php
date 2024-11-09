@@ -15,7 +15,14 @@ class CategoriaApiController{
 
     public function getCategorias(){
         $Categorias = $this->model->getCategorias();
-        return $this->view->response($Categorias, 200);
+
+        if($Categorias){
+            return $this->view->response($Categorias, 200);
+
+        }else{
+            return $this->view->response("No se puedo encontrar la tabla categoria", 404);
+
+        }
     }
 
     public function crearCategoria($req){
@@ -23,12 +30,16 @@ class CategoriaApiController{
         $descripcion = $req->body->descripcion;
 
         if(empty($nombre) || empty($descripcion)){
-            return $this->view->response("Faltan completar campos", 401);
+            return $this->view->response("Faltan completar campos", 400);
         }
 
         $dato = $this->model->crearCategoria($nombre, $descripcion);
-
-        return $this->view->response($dato, 200);
+        
+        if($dato){
+            return $this->view->response("Se creo exitosamente la categoria deseada, con el id: $dato", 201);
+        }else{
+            return $this->view->response("Hubo un error al subir el archivo", 400);
+        }
 
     }
 
@@ -50,7 +61,7 @@ class CategoriaApiController{
         $categoria = $this->model->TraerCategoria($id);
 
         if(!$categoria){
-            return $this->view->response("No existe la categoria con el id = $id", 404);
+            return $this->view->response("No se pudo modificar la categoria con el id: $id. Verifique que la categoria exista y que no tenga productos asociados antes de intentar de nuevo", 404);
         }
         else{
             $this->model->eliminarCategoria($id);
@@ -72,14 +83,52 @@ class CategoriaApiController{
         $descripcion = $req->body->descripcion;
 
         if(empty($nombre) || empty($descripcion)){
-            return $this->view->response("Faltan completar campos", 401);
+            return $this->view->response("Faltan completar campos", 400);
         }
 
-        $idEditado = $this->model->ModificarCat($id, $nombre, $descripcion);
+        $categoriaEditada = $this->model->ModificarCat($id, $nombre, $descripcion);
 
-        return $this->view->response($idEditado, 200);
+        if(empty($categoriaEditada)){
+            return $this->view->response("No se pudo modificar la categoria", 404);
+        }
+            
+        return $this->view->response($categoriaEditada, 200);
+        
 
     }
 
+    public function paginarCategoria($req) {
+        $maximoPag = $req->body->cantidad;
+        $pagina = $req->body->pagina;
+        
+        $categorias = $this->model->getCategorias();
+        $cantidadTotal = count($categorias);
+    
+        $totalPaginas = ceil($cantidadTotal / $maximoPag); //paginas totales para establecer los limites
+    
+        //ver que la pagina este en los limites
+        if ($pagina < 1) {
+            $pagina = 1;
+        } elseif ($pagina > $totalPaginas) {
+            $pagina = $totalPaginas;
+        }
+    
+        $offset = ($pagina - 1) * $maximoPag; //Calcula el índice desde donde empezar a extraer elementos para la página solicitada
+    
+        $categoriasPaginadas = array_slice($categorias, $offset, $maximoPag);
+
+        $respuesta = [
+            'data' => $categoriasPaginadas,
+            'Paginacion' => [
+                'Pagina' => $pagina,
+                'Total de paginas' => $totalPaginas,
+                'Datos por Pagina' => $maximoPag,
+                'Total de paginas' => $cantidadTotal,
+            ]
+        ];
+    
+        return $this->view->response($respuesta, 200);
+    }
+    
 
 }

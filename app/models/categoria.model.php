@@ -19,11 +19,16 @@ class CategoriaApiModel{
         $pdo = $this->CrearConexion();
         $sql = "select * from categorias";
         $query = $pdo->prepare($sql);
-        $query->execute();
-    
-        $categorias = $query->fetchAll(PDO::FETCH_OBJ);
-    
-        return $categorias;
+
+        try {
+            $query->execute();
+            $categorias = $query->fetchAll(PDO::FETCH_OBJ);
+            return $categorias;
+
+        } catch (\Throwable $th) {
+            return null;
+        }
+       
     }
 
     public function TraerCategoria($id) {
@@ -31,11 +36,16 @@ class CategoriaApiModel{
         $sql = "SELECT * FROM categorias WHERE id_categoria = :id";
         $query = $pdo->prepare($sql);
         $query->bindParam(':id', $id, PDO::PARAM_INT);
-        $query->execute();
 
-        $categoria = $query->fetch(PDO::FETCH_OBJ); // Retorna un solo objeto
-    
-        return $categoria;
+        try {
+            $query->execute();
+            $categoria = $query->fetch(PDO::FETCH_OBJ); // Retorna un solo objeto
+            return $categoria;
+
+        } catch (\Throwable $th) {
+           return null;
+        }
+       
     }
 
     public function ModificarCat($id, $especie_animal, $descripcion){
@@ -44,12 +54,12 @@ class CategoriaApiModel{
         $query = $pDO->prepare($sql);
         $query->execute([$especie_animal, $descripcion, $id]);
 
-        if ($query->rowCount() > 0) {
-            $sql = 'SELECT * FROM categorias WHERE id_categoria = ?';
+        if ($query->rowCount() > 0) { //si se modifico alguna fila
+            $sql = 'SELECT * FROM categorias WHERE id_categoria = ?';//encontrar la fila modificada(que deberia ser la misma que el id)
             $query = $pDO->prepare($sql);
             $query->execute([$id]);
             
-            return $query->fetch(PDO::FETCH_ASSOC);
+            return $query->fetch(PDO::FETCH_ASSOC); //devuelve la categoria ya editada
         } else {
             return null;
         }
@@ -65,17 +75,17 @@ class CategoriaApiModel{
         } catch (\Throwable $th) {
             return false;
         }
-
-
     }
 
     public function crearCategoria($nombre, $descripcion){
         $pdo = $this->CrearConexion();
         $sql = 'INSERT INTO categorias (especie_animal, descripcion) VALUES (?, ?)';
         $query = $pdo->prepare($sql);
+
         try {
             $query->execute([$nombre, $descripcion]);
             return $pdo->lastInsertId(); // Devuelve el último ID insertado
+
         } catch (\Throwable $th) {
             return null;
         }
