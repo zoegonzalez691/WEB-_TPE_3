@@ -21,7 +21,7 @@ class UserApiController {
             $token = bin2hex(random_bytes(16));
             $this->model->SubirToken($user->usuario_id, $token);
 
-            return $this->view->response(['token' => $token], 200);
+            return $this->view->response($token, 200);
         }
 
         return $this->view->response("No se pudo autenticar el usuario", 404);
