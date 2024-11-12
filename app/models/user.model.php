@@ -29,14 +29,6 @@ class UsersApiModel{
     
     }
 
-    public function SubirToken($id, $token){
-        $pdo = $this->CrearConexion();
-        $sql = "UPDATE usuarios SET token = ? WHERE id = ?";
-        $query = $pdo->prepare($sql);
-        $query->execute([$token, $id]);
-
-    }
-
 }
 
     

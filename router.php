@@ -25,7 +25,5 @@ $router->addRoute('productos',      'POST',     'ProductosApiController',    'cr
 $router->addRoute('productos/:id',  'PUT',      'ProductosApiController',    'modificarProducto');
 
 
-
-
 // rutea
 $router->route($_GET["resource"], $_SERVER['REQUEST_METHOD']);

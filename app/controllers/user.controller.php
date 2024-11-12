@@ -1,6 +1,8 @@
 <?php
 require_once 'app/models/user.model.php';
 require_once 'app/views/user.view.php';
+
+use \Firebase\JWT\JWT;
 class UserApiController {
     private $model;
     private $view;
@@ -17,13 +19,25 @@ class UserApiController {
         $user = $this->model->GetUsuario($UserName);
 
         if ($user && password_verify($Password, $user->contraseña)) {
-            // Generar token único
-            $token = bin2hex(random_bytes(16));
-            $this->model->SubirToken($user->usuario_id, $token);
+            // Generar datos del payload
+            $payload = [
+                'hora' => time(), //cuando se creo
+                'exp' => time() + 3600, //cuando vence
+                'user_id' => $user->id,
+                'es_admin' => $user->es_admin //verifico si el usuario es admin
+            ];
 
-            return $this->view->response($token, 200);
+            // Llave secreta para firmar el token
+            $secretKey = "trabajoWeb";
+
+            // Generar el JWT
+            $jwt = JWT::encode($payload, $secretKey, 'HS256');
+
+            return $this->view->response(["token" => $jwt], 200);
         }
 
         return $this->view->response("No se pudo autenticar el usuario", 404);
     }
 }
+
+?>
