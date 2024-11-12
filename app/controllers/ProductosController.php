@@ -72,6 +72,6 @@ class ProductosApiController{
         $this->view->response($modificado, 200);
         
     }
-    }
+    
 }
 

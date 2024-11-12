@@ -1,8 +1,6 @@
 <?php
-
 require_once 'app/models/categoria.model.php';
 require_once 'app/views/categoria.views.php';
-
 class CategoriaApiController{
     private $view;
     private $model;
@@ -113,17 +111,16 @@ class CategoriaApiController{
             $pagina = $totalPaginas;
         }
     
-        $offset = ($pagina - 1) * $maximoPag; //Calcula el índice desde donde empezar a extraer elementos para la página solicitada
+        $indice = ($pagina - 1) * $maximoPag; //Calcula el índice desde donde empezar a extraer elementos para la página solicitada
     
-        $categoriasPaginadas = array_slice($categorias, $offset, $maximoPag);
+        $categoriasPaginadas = array_slice($categorias, $indice, $maximoPag);
 
         $respuesta = [
             'data' => $categoriasPaginadas,
             'Paginacion' => [
                 'Pagina' => $pagina,
                 'Total de paginas' => $totalPaginas,
-                'Datos por Pagina' => $maximoPag,
-                'Total de paginas' => $cantidadTotal,
+                'Datos por Pagina' => $maximoPag
             ]
         ];
     

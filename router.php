@@ -1,8 +1,13 @@
 <?php
 require_once 'libs/router.php';
 require_once 'app/controllers/categoria.controller.php';
+require_once 'app/controllers/ProductosController.php';
+require_once 'app/controllers/user.controller.php';
 
 $router = new Router();
+
+//autenticacion
+$router->addRoute('login','POST','UserApiController','verficarUser');
 
 //categorias:
 $router->addRoute('categorias','GET','CategoriaApiController','getCategorias');

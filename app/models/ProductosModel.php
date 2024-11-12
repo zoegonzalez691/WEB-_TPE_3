@@ -1,7 +1,7 @@
 <?php
 require_once 'config/config.php';
 
-   class ProductosModel {
+   class ProductosApiModel {
       protected $db;
 
      private function crearConexion () {
