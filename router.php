@@ -18,11 +18,13 @@ $router->addRoute('categoria/:id','PUT','CategoriaApiController','editarCategori
 $router->addRoute('categoriasPag','POST', 'CategoriaApiController', 'paginarCategoria');
 
 //productos
-$router->addRoute('productos',      'GET',      'ProductosApiController',    'obtenerProductos');
-$router->addRoute('productos/:id',  'GET',      'ProductosApiController',    'obtenerProducto');
-$router->addRoute('productos/:id',  'DELETE',   'ProductosApiController',    'eliminarProducto');
-$router->addRoute('productos',      'POST',     'ProductosApiController',    'crearProducto');
-$router->addRoute('productos/:id',  'PUT',      'ProductosApiController',    'modificarProducto');
+$router->addRoute('productos',      'GET',      'ProductosController',    'obtenerProductos');
+$router->addRoute('producto/:id',  'GET',      'ProductosController',    'obtenerProducto');
+$router->addRoute('producto/:id',  'DELETE',   'ProductosController',    'eliminarProducto');
+$router->addRoute('producto',      'POST',     'ProductosController',    'crearProducto');
+$router->addRoute('producto/:id',  'PUT',      'ProductosController',    'modificarProducto');
+$router->addRoute('productosPag',   'POST',     'ProductosController',    'paginarProductos');
+
 
 
 // rutea

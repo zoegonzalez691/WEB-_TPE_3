@@ -1,6 +1,6 @@
 <?php
 
-class ProductosApiView{
+class ProductosView{
 
 public function response($data, $status) {
     header("Content-Type: application/json");

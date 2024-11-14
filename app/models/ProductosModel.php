@@ -1,8 +1,9 @@
 <?php
 require_once 'config/config.php';
 
-   class ProductosApiModel {
+   class ProductosModel {
       protected $db;
+      protected $orderBy;
 
      private function crearConexion () {
   
@@ -99,6 +100,14 @@ require_once 'config/config.php';
       $this->db->query($sql);
       }
    }
+    public function ordenarProductos($columna,$orden){
+      $db= $this->crearConexion();
+      $sentencia= $db->prepare("SELECT * FROM productos ORDER BY ? ?");
+      $sentencia->execute([$columna,$orden]);
+      $productos= $sentencia->fetchAll(PDO::FETCH_OBJ);
+
+      return $productos;
+    }
 
       public function traerTodos(){
          $db = $this->crearConexion();
