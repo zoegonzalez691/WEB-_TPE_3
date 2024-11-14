@@ -1,6 +1,7 @@
 <?php
 require_once 'app/models/user.model.php';
 require_once 'app/views/user.view.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 use \Firebase\JWT\JWT;
 class UserApiController {
@@ -23,7 +24,7 @@ class UserApiController {
             $payload = [
                 'hora' => time(), //cuando se creo
                 'exp' => time() + 3600, //cuando vence
-                'user_id' => $user->id,
+                'user_id' => $user->usuario_id,
                 'es_admin' => $user->es_admin //verifico si el usuario es admin
             ];
 
