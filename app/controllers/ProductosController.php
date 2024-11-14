@@ -1,7 +1,12 @@
 <?php
+<<<<<<< HEAD
   require_once 'app/models/ProductosModel.php';
   require_once 'app/views/ProductosView.php';
   //require_once 'app/controllers/user.controller.php';
+=======
+require_once 'app/models/ProductosModel.php';
+require_once 'app/views/ProductosView.php';
+>>>>>>> acc61ecec4975b938f4669025afcc5780188df9f
 
 class ProductosController{
     private $model;

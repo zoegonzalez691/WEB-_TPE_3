@@ -7,7 +7,7 @@ require_once 'app/controllers/user.controller.php';
 $router = new Router();
 
 //autenticacion
-$router->addRoute('login','POST','UserApiController','verficarUser');
+$router->addRoute('login','POST','UserApiController','verificarUser');
 
 //categorias:
 $router->addRoute('categorias','GET','CategoriaApiController','getCategorias');
