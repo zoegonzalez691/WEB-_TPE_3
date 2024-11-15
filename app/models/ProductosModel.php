@@ -102,8 +102,8 @@ require_once 'config/config.php';
    }
     public function ordenarProductos($columna,$orden){
       $db= $this->crearConexion();
-      $sentencia= $db->prepare("SELECT * FROM productos ORDER BY ? ?");
-      $sentencia->execute([$columna,$orden]);
+      $sentencia= $db->prepare("SELECT * FROM productos ORDER BY $columna $orden");
+      $sentencia->execute();
       $productos= $sentencia->fetchAll(PDO::FETCH_OBJ);
 
       return $productos;
@@ -119,11 +119,11 @@ require_once 'config/config.php';
          return $productos;
       }
 
-      public function traerDestacados(){
+      public function traerDestacados($filtro){
          $db= $this->crearConexion();
 
          $sentencia= $db->prepare("SELECT * FROM productos WHERE destacado = ?");
-         $sentencia->execute([1]);
+         $sentencia->execute([$filtro]);
          $productosDestacados= $sentencia-> fetchAll(PDO::FETCH_OBJ);
 
          return $productosDestacados;

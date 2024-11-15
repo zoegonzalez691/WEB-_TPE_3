@@ -1,12 +1,7 @@
 <?php
-<<<<<<< HEAD
   require_once 'app/models/ProductosModel.php';
   require_once 'app/views/ProductosView.php';
-  //require_once 'app/controllers/user.controller.php';
-=======
-require_once 'app/models/ProductosModel.php';
-require_once 'app/views/ProductosView.php';
->>>>>>> acc61ecec4975b938f4669025afcc5780188df9f
+  require_once 'app/controllers/user.controller.php';
 
 class ProductosController{
     private $model;
@@ -17,28 +12,29 @@ class ProductosController{
         $this->view= new ProductosView();
 
     }
-    //aca puedo crear una funcion aparte para el filtrado? porque si uso la misma funcion no me toma la url
-    // cuando solo quiero traer todos los productos sin filtros
+
     public function obtenerProductos(){
         $filtroDestacado= 0;
-        //de esta manera me toma como que destacado vale 1 aunque le ponga el valor 0 en la url porque esta seteado y el if lo transforma en 1
         if(isset($_GET['destacado'])){
             $filtroDestacado= $_GET['destacado']== 1;
-            $productos= $this->model-> traerdestacados($filtroDestacado);
+            $productos= $this->model-> traerDestacados($filtroDestacado);
 
         }
-        if (isset($_GET['sort']) && isset($_GET['order'])){
+        else if (isset($_GET['sort']) && isset($_GET['order'])){
             $columna=$_GET['sort'];
             $orden= $_GET['order'];
             
-                $productos=$this->model->ordenarProductos($columna,$orden);
-            
-            
+            $productos=$this->model->ordenarProductos($columna,$orden);
         }
-       // else
-        //$productos= $this->model-> traerTodos();
-        
+        else{
+           $productos= $this->model-> traerTodos();
+        }
+        if($productos){
         return $this->view->response($productos, 200);
+        }
+        else{
+            return $this->view->response('No se pudo encontrar la tabla', 404);
+        }
     }
     
     public function obtenerProducto($req){ 
@@ -51,7 +47,7 @@ class ProductosController{
     }
     
     public function eliminarProducto($req){
-
+       if(verificarUser()==200){
         $id= $req->params->id;
         $producto= $this->model->traerPorID($id);
         if(!$producto){
@@ -62,9 +58,11 @@ class ProductosController{
             return $this->view->response("Se pudo eliminar correctamente", 200);
         }  
     }
+    }
     
     
     public function crearProducto($req){
+       if(verificarUser()==200){
         $nombre= $req->body->nombre;
         $descripcion= $req->body->descripcion;
         $precio= $req->body->precio;
@@ -77,9 +75,10 @@ class ProductosController{
         $dato=$this->model-> guardarProductos($nombre,$descripcion,$precio,$destacado,$imagen,$categoria);
         return $this->view->response($dato);
     }
+    }
     
     public function modificarProducto($req){
-
+       if(verificarUser()==200){
         $id= $req->params->id;
         $producto= $this->model->traerPorID($id);
         if(!$producto){
@@ -96,10 +95,12 @@ class ProductosController{
         }
         $modificado= $this->model->guardarCambiosProducto($nombre,$descripcion,$precio,$destacado,$imagen,$categoria,$id);
         $this->view->response($modificado, 200);
+    }
         
     }
     
-    public function paginarProductos($req) {
+    public function paginarProductos() {
+    
         $maximoPag = $req->body->cantidad;
         $pagina = $req->body->pagina;
         

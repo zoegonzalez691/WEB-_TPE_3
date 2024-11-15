@@ -13,6 +13,7 @@ class UserApiController {
         $this->view = new UserApiView();
     }
 
+
     public function verificarUser($req){
         $UserName = $req->body->UserName;
         $Password = $req->body->Password;
