@@ -40,6 +40,8 @@ class UserApiController {
 
         return $this->view->response("No se pudo autenticar el usuario", 404);
     }
+        
+
 }
 
 ?>
