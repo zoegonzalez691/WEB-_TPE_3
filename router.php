@@ -11,11 +11,11 @@ $router->addRoute('login','POST','UserApiController','verificarUser');
 
 //categorias:
 $router->addRoute('categorias','GET','CategoriaApiController','getCategorias');
+$router->addRoute('categorias/:pagina/:cantidad','GET','CategoriaApiController','getCategoriasParams');
 $router->addRoute('categorias','POST','CategoriaApiController','crearCategoria');
 $router->addRoute('categoria/:id','GET','CategoriaApiController','getCategoria');
 $router->addRoute('categoria/:id','DELETE','CategoriaApiController','eliminarCategoria');
 $router->addRoute('categoria/:id','PUT','CategoriaApiController','editarCategoria');
-$router->addRoute('categoriasPag','POST', 'CategoriaApiController', 'paginarCategoria');
 
 //productos
 $router->addRoute('productos',      'GET',      'ProductosController',    'obtenerProductos');
@@ -24,8 +24,6 @@ $router->addRoute('producto/:id',  'DELETE',   'ProductosController',    'elimin
 $router->addRoute('producto',      'POST',     'ProductosController',    'crearProducto');
 $router->addRoute('producto/:id',  'PUT',      'ProductosController',    'modificarProducto');
 $router->addRoute('productosPag',   'POST',     'ProductosController',    'paginarProductos');
-
-
 
 // rutea
 $router->route($_GET["resource"], $_SERVER['REQUEST_METHOD']);

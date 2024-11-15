@@ -1,6 +1,8 @@
 <?php
 require_once 'app/models/categoria.model.php';
 require_once 'app/views/categoria.views.php';
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 class CategoriaApiController{
     private $view;
     private $model;
@@ -11,26 +13,102 @@ class CategoriaApiController{
 
     }
 
-    public function getCategorias(){
-        $Categorias = $this->model->getCategorias();
+    public function verificarToken($token) {
+        $secretKey = "trabajoWeb";
+    
+        try {
+            // Decodificar el token
+            $decoded = JWT::decode($token, new Key($secretKey, 'HS256'));
+    
+            // Verificar si el token ha expirado
+            if ($decoded->exp < time()) {
+                return false;
+            }
+    
+            return true;
+    
+        } catch (\Exception $e) {
+            return $this->view->response("Token inválido: " . $e->getMessage(), 401);
+        }
+    }
+    
 
-        if($Categorias){
-            return $this->view->response($Categorias, 200);
-
-        }else{
-            return $this->view->response("No se puedo encontrar la tabla categoria", 404);
-
+    public function getCategoriasParams($req) {
+        $pagina =$req->params->pagina;
+        $cantidad = $req->params->cantidad;
+    
+        if (isset($pagina) && isset($cantidad)){
+            $categorias = $this->model->getCategorias();
+            $cantidadTotal = count($categorias);
+    
+            $totalPaginas = ceil($cantidadTotal / $cantidad);
+    
+            if ($pagina > $totalPaginas) {
+                $pagina = $totalPaginas;
+            }
+    
+            $indice = ($pagina - 1) * $cantidad;
+    
+            $categoriasPaginadas = array_slice($categorias, $indice, $cantidad);
+    
+            $respuesta = [
+                'data' => $categoriasPaginadas,
+                'Paginacion' => [
+                    'Pagina' => $pagina,
+                    'TotalPaginas' => $totalPaginas,
+                    'DatosPorPagina' => $cantidad,
+                    'TotalDatos' => $cantidadTotal
+                ]
+            ];
+    
+            return $this->view->response($respuesta, 200);
         }
     }
 
+    public function getCategorias(){
+        $categorias = $this->model->getCategorias();
+    
+        if ($categorias) {
+            return $this->view->response($categorias, 200);
+        } else {
+            return $this->view->response("No se pudo encontrar la tabla 'categoria'", 404);
+        }
+
+    }
+    
+
     public function crearCategoria($req){
+        if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
+        } else {
+            return $this->view->response("Falta el token de autorización", 401);
+        }
+        
+        // Verificar si el encabezado tiene el prefijo "Bearer " al inicio
+        $position = strpos($authHeader, 'Bearer ');
+        if ($position === 0) {
+            // Extraer el token eliminando el prefijo "Bearer "
+            $token = substr($authHeader, 7);
+        } else {
+            return $this->view->response("El token no tiene el formato esperado", 400);
+        }
+        
+        // Ahora verifica el token
+        $Token = $this->verificarToken($token);
+        
+        if (!$Token) {
+            return $this->view->response("No se pudo autenticar el token", 404);
+        }
+        
+        //Una vez que el token es validado, se continua con la ejecucion
+
         $nombre = $req->body->especie_animal;
         $descripcion = $req->body->descripcion;
 
         if(empty($nombre) || empty($descripcion)){
             return $this->view->response("Faltan completar campos", 400);
         }
-
+        
         $dato = $this->model->crearCategoria($nombre, $descripcion);
         
         if($dato){
@@ -69,6 +147,28 @@ class CategoriaApiController{
     }
 
     public function editarCategoria($req){
+        if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
+        } else {
+            return $this->view->response("Falta el token de autorización", 401);
+        }
+        
+        // Verificar si el encabezado tiene el prefijo "Bearer " al inicio
+        $position = strpos($authHeader, 'Bearer ');
+        if ($position === 0) {
+            // Extraer el token eliminando el prefijo "Bearer "
+            $token = substr($authHeader, 7);
+        } else {
+            return $this->view->response("El token no tiene el formato esperado", 400);
+        }
+        
+        // Ahora verifica el token
+        $Token = $this->verificarToken($token);
+        
+        if (!$Token) {
+            return $this->view->response("No se pudo autenticar el token", 404);
+        }
+
         $id = $req->params->id;
 
         $categoria = $this->model->TraerCategoria($id);
@@ -94,38 +194,5 @@ class CategoriaApiController{
         
 
     }
-
-    public function paginarCategoria($req) {
-        $maximoPag = $req->body->cantidad;
-        $pagina = $req->body->pagina;
-        
-        $categorias = $this->model->getCategorias();
-        $cantidadTotal = count($categorias);
-    
-        $totalPaginas = ceil($cantidadTotal / $maximoPag); //paginas totales para establecer los limites
-    
-        //ver que la pagina este en los limites
-        if ($pagina < 1) {
-            $pagina = 1;
-        } elseif ($pagina > $totalPaginas) {
-            $pagina = $totalPaginas;
-        }
-    
-        $indice = ($pagina - 1) * $maximoPag; //Calcula el índice desde donde empezar a extraer elementos para la página solicitada
-    
-        $categoriasPaginadas = array_slice($categorias, $indice, $maximoPag);
-
-        $respuesta = [
-            'data' => $categoriasPaginadas,
-            'Paginacion' => [
-                'Pagina' => $pagina,
-                'Total de paginas' => $totalPaginas,
-                'Datos por Pagina' => $maximoPag
-            ]
-        ];
-    
-        return $this->view->response($respuesta, 200);
-    }
-    
 
 }
