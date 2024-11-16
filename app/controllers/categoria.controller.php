@@ -28,16 +28,17 @@ class CategoriaApiController{
             return true;
     
         } catch (\Exception $e) {
-            return $this->view->response("Token inválido: " . $e->getMessage(), 401);
+            //$e
         }
     }
     
 
-    public function getCategoriasParams($req) {
-        $pagina =$req->params->pagina;
-        $cantidad = $req->params->cantidad;
-    
-        if (isset($pagina) && isset($cantidad)){
+    public function getCategorias() {
+        //paginacion
+        if(isset($_GET['pagina'])&& isset($_GET['cantidad'])){
+            $pagina = $_GET['pagina'];
+            $cantidad = $_GET['cantidad'];
+
             $categorias = $this->model->getCategorias();
             $cantidadTotal = count($categorias);
     
@@ -62,18 +63,24 @@ class CategoriaApiController{
             ];
     
             return $this->view->response($respuesta, 200);
-        }
-    }
 
-    public function getCategorias(){
-        $categorias = $this->model->getCategorias();
-    
-        if ($categorias) {
-            return $this->view->response($categorias, 200);
-        } else {
-            return $this->view->response("No se pudo encontrar la tabla 'categoria'", 404);
-        }
+        //Muestra los resultados segun el orden que le indiquen
+        }else if (isset($_GET['order'])){
+            $orden= $_GET['order'];
+            
+            $categoriasOrdenadas=$this->model->ordenarCategorias($orden);
 
+            return $this->view->response($categoriasOrdenadas, 200);
+
+        } else{
+            //muestra todas las categorias si no se ingresa ningun query params
+            $categorias = $this->model->getCategorias();
+            if ($categorias) {
+                return $this->view->response($categorias, 200);
+            } else {
+                return $this->view->response("No se pudo encontrar la tabla 'categoria'", 404);
+            }
+         }
     }
     
 
@@ -114,7 +121,7 @@ class CategoriaApiController{
         if($dato){
             return $this->view->response("Se creo exitosamente la categoria deseada, con el id: $dato", 201);
         }else{
-            return $this->view->response("Hubo un error al subir el archivo", 400);
+            return $this->view->response("Hubo un error al subir los datos ingresados", 400);
         }
 
     }
@@ -132,6 +139,30 @@ class CategoriaApiController{
     }
 
     public function eliminarCategoria($req){
+        if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
+        } else {
+            return $this->view->response("Falta el token de autorización", 401);
+        }
+        
+        // Verificar si el encabezado tiene el prefijo "Bearer " al inicio
+        $position = strpos($authHeader, 'Bearer ');
+        if ($position === 0) {
+            // Extraer el token eliminando el prefijo "Bearer "
+            $token = substr($authHeader, 7);
+        } else {
+            return $this->view->response("El token no tiene el formato esperado", 400);
+        }
+        
+        // Ahora verifica el token
+        $Token = $this->verificarToken($token);
+        
+        if (!$Token) {
+            return $this->view->response("No se pudo autenticar el token", 404);
+        }
+
+        //elimina la categoria
+
         $id = $req->params->id;
 
         $categoria = $this->model->TraerCategoria($id);
@@ -141,7 +172,7 @@ class CategoriaApiController{
         }
         else{
             $this->model->eliminarCategoria($id);
-            return $this->view->response("Se a eliminado la categoria con id = $id", 200);
+            return $this->view->response("Se ha eliminado la categoria con id = $id", 200);
         }
 
     }
@@ -169,6 +200,8 @@ class CategoriaApiController{
             return $this->view->response("No se pudo autenticar el token", 404);
         }
 
+        //edicion de categoria
+
         $id = $req->params->id;
 
         $categoria = $this->model->TraerCategoria($id);
@@ -186,7 +219,7 @@ class CategoriaApiController{
 
         $categoriaEditada = $this->model->ModificarCat($id, $nombre, $descripcion);
 
-        if(empty($categoriaEditada)){
+        if(!$categoriaEditada){
             return $this->view->response("No se pudo modificar la categoria", 404);
         }
             

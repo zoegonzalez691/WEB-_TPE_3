@@ -61,7 +61,7 @@ class CategoriaApiModel{
             
             return $query->fetch(PDO::FETCH_ASSOC); //devuelve la categoria ya editada
         } else {
-            return null;
+            return false;
         }
     }
 
@@ -91,5 +91,19 @@ class CategoriaApiModel{
         }
     }
            
+    public function ordenarCategorias($orden){
+        $pdo = $this->CrearConexion(); 
+        $sql = "SELECT * FROM categorias ORDER BY id_categoria $orden"; 
+        $query = $pdo->prepare($sql);
+
+        try {
+            $query->execute();
+            $categoriaOrdenada = $query->fetchAll(PDO::FETCH_OBJ);
+            return $categoriaOrdenada;
+        } catch (\Throwable $th) {
+            return null;
+        }
+
+    }
 
 }

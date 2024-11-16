@@ -11,7 +11,6 @@ $router->addRoute('login','POST','UserApiController','verificarUser');
 
 //categorias:
 $router->addRoute('categorias','GET','CategoriaApiController','getCategorias');
-$router->addRoute('categorias/:pagina/:cantidad','GET','CategoriaApiController','getCategoriasParams');
 $router->addRoute('categorias','POST','CategoriaApiController','crearCategoria');
 $router->addRoute('categoria/:id','GET','CategoriaApiController','getCategoria');
 $router->addRoute('categoria/:id','DELETE','CategoriaApiController','eliminarCategoria');
