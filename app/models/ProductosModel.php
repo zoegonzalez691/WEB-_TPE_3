@@ -142,19 +142,6 @@ require_once 'config/config.php';
          return $producto;
       }
 
-      public function TraerProductosCategoria($categoria){
-        $db = $this->crearConexion();
-        $sql = "SELECT * FROM productos WHERE 
-                  fk_categoria = '$categoria' ";
-         $query = $db->prepare($sql);
-         $query->execute();
-     
-         $productos = $query->fetchAll(PDO::FETCH_OBJ);
-     
-         return $productos;
-
-
-      }
 
       public function eliminarProducto($id){
          $db = $this-> crearConexion();

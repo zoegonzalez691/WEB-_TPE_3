@@ -22,7 +22,7 @@ $router->addRoute('producto/:id',  'GET',      'ProductosController',    'obtene
 $router->addRoute('producto/:id',  'DELETE',   'ProductosController',    'eliminarProducto');
 $router->addRoute('producto',      'POST',     'ProductosController',    'crearProducto');
 $router->addRoute('producto/:id',  'PUT',      'ProductosController',    'modificarProducto');
-$router->addRoute('productosPag',   'POST',     'ProductosController',    'paginarProductos');
+
 
 // rutea
 $router->route($_GET["resource"], $_SERVER['REQUEST_METHOD']);

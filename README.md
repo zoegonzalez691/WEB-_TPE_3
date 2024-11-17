@@ -275,7 +275,7 @@ En caso de no existir la tabla, la vista me retornara un mensaje de 'No se pudo 
 
 ## Query Params:
 ## Filtro Destacado:
-          Para traer los productos destacados debo pasar por la url el parametro get "?destacado=1", esto me devolvera un JSON con todos los productos destacados con el codigo 200, esto se vera asi:
+          Para traer los productos destacados debo pasar por la url el parametro get "?destacado=1", esto me devolvera un JSON con todos los productos destacados con el codigo 200, se verá asi:
           [
     {
         "id_producto": 1,
@@ -299,6 +299,106 @@ En caso de no existir la tabla, la vista me retornara un mensaje de 'No se pudo 
 En caso de no encontrarse la tabla la vista retornara un mensaje 'No se pudo encontrar la tabla', con el codigo 404.
 
 ## Ordenamiento:
+Los productos podran ordenarse de forma ascendente o descendente mediante cualquiera de sus columnas, para hacerlo se debe pasar el parametro con las palabras clave sort(para indicar mediante que columna quiero hacer el ordenamiento), y la palabra order(para indicar en que orden quiero que me traigan los productos), en la url se debe ver asi: ?sort=precio&order=asc, esta accion me va a retornar el siguiente JSON y el codigo 200 en caso de ejecutarse correctamente:
+[
+    {
+        "id_producto": 5,
+        "nombre": "Comedero Elevado ",
+        "descripcion": "Comedero elevado, de 30cm para perros de raza grande.\r\nApto para la prevencion de enfermedades relacionadas a la columna.",
+        "imagen": "https://i.pinimg.com/564x/ae/9a/87/ae9a8752535d8a00ec151006133a94b9.jpg",
+        "fk_categoria": 9,
+        "precio": 0,
+        "destacado": 1
+    },
+    {
+        "id_producto": 6,
+        "nombre": "Huesos de colores",
+        "descripcion": "Huesos para cachorros de tela, apto para los dientes. Disponibles en diferentes colores (azul, verde, rosa, rojo, amarillo)",
+        "imagen": "https://i.pinimg.com/474x/37/2d/9d/372d9ddbb3ffd1ebf1df4cfb1f549084.jpg",
+        "fk_categoria": 9,
+        "precio": 0,
+        "destacado": 0
+    },
+    {
+        "id_producto": 2,
+        "nombre": "Casa-Jaula para hamster",
+        "descripcion": "Jaula de tamaño considerable para que le des a tu hmaster la calidad de vida que mrece. \r\nCuenta con diferentes niveles para que el hasmter pueda divertirse.\r\nDisponibles en 5 diferentes colores.",
+        "imagen": "https://i.pinimg.com/236x/86/77/e5/8677e5fa317970fddae3a47dbe37389b.jpg",
+        "fk_categoria": 2,
+        "precio": 17890,
+        "destacado": 0
+    },
+    {
+        "id_producto": 1,
+        "nombre": "Casa-Rascador",
+        "descripcion": "Casa y rascador apto para gatos. \r\nAltura: 54cm \r\nViene tambien con un colgante para que juegue. \r\nColor a eleccion (Disponible en rosa, rojo, azul, violeta, naranja)",
+        "imagen": "https://i.pinimg.com/236x/9f/3e/56/9f3e5682517588df04b6f4d398d3cdb1.jpg",
+        "fk_categoria": 1,
+        "precio": 25690,
+        "destacado": 1
+    }
+]
+En caso de ocurrir algun error se retornara el codigo 404, con el mensaje 'No se pudo encontrar la tabla'.
+
+## Paginacion:
+Para obtener los Productos paginados debo cargar los parametros mediante la url con las palabras clave pagina(indica la pagina que quiero ver), y cantidad(indica la cantidad de productos que quiero ver por pagina), quedaria algo asi ?pagina=2&cantidad=2, esto retornaria un JSON con el codigo 200 en caso de ejecutarse correctamente, que se vera asi:
+"data": [
+        {
+            "id_producto": 5,
+            "nombre": "Comedero Elevado ",
+            "descripcion": "Comedero elevado, de 30cm para perros de raza grande.\r\nApto para la prevencion de enfermedades relacionadas a la columna.",
+            "imagen": "https://i.pinimg.com/564x/ae/9a/87/ae9a8752535d8a00ec151006133a94b9.jpg",
+            "fk_categoria": 9,
+            "precio": 0,
+            "destacado": 1
+        },
+        {
+            "id_producto": 6,
+            "nombre": "Huesos de colores",
+            "descripcion": "Huesos para cachorros de tela, apto para los dientes. Disponibles en diferentes colores (azul, verde, rosa, rojo, amarillo)",
+            "imagen": "https://i.pinimg.com/474x/37/2d/9d/372d9ddbb3ffd1ebf1df4cfb1f549084.jpg",
+            "fk_categoria": 9,
+            "precio": 0,
+            "destacado": 0
+        }
+    ],
+    "Paginacion": {
+        "Pagina": "2",
+        "TotalPaginas": 2,
+        "DatosPorPagina": "2",
+        "TotalDatos": 4
+    }
+}
+
+## Metodo GET con ID:
+mediante el endpoint producto/:id, se obtendra especificamente el producto solicitado, por ejemplo, "producto/5" en caso de ejecutarse correctamente se devolvera un arreglo con todos los datos del producto y el codigo 200:
+{
+    "id_producto": 5,
+    "nombre": "Comedero Elevado ",
+    "descripcion": "Comedero elevado, de 30cm para perros de raza grande.\r\nApto para la prevencion de enfermedades relacionadas a la columna.",
+    "imagen": "https://i.pinimg.com/564x/ae/9a/87/ae9a8752535d8a00ec151006133a94b9.jpg",
+    "fk_categoria": 9,
+    "precio": 0,
+    "destacado": 1,
+    "categoria": "Caninos"
+}
+En caso de no exixtir el producto con el id solicitado se retornara el mensaje 'No existe con el id:'.$id y el codigo 401.
+
+## Metodos DELETE,POST,PUT:
+Para poder acceder a utilizar estos metodos será obligatorio que el usuario esté autorizado *ver Authorization*.
+
+## Metodo DELETE:
+Para eliminar un producto se utilizara el endpoint producto/:id con el metodo delete, por ejemplo, producto/3, en caso de efectuarse la eliminacion se me retornara un mensaje 'se pudo eliminar correctamente el producto con el id:'.$id y el codigo 200, en caso de que el producto a eliminar no existiera me retornaran un mensaje de 'el producto con el id:'.$id .no existe con el codigo 404.
+
+## Metodo PUT:
+Para modificar un producto se hará mediante el endpoint producto/:id el cual indicara cual es el producto a modificar,con el metodo PUT, en caso  de existir el producto se tomaran todos los datos que el usuario envia mediante el body para efectuar la modificacion, en caso que haya algun campo vacio  se notificara con el mensaje 'Faltan completar campos', y el codigo 401.
+Si estan todos los datos correctamente se confirmara la modificacion mostrando el producto modificado y el codigo 200. En caso de que ocurra cualquier error inseperado con la modificacion se enviara un mensaje 'Ocurrio un error al modificar el producto' y el codigo 500.
+Si el producto a modificar no existe se enviara el mensaje 'No existe el producto con el id'.$id, con el codigo 404.
+
+## Metodo POST: 
+Para añadir un nuevo producto se usara el endpoint api/producto con el metodo POST, se tomaran los datos que el usuario haya ingresado desde el body, en caso de existir algun campo vacio se enviara un mensaje 'Faltan completar campos ' y el codigo 401.
+Si existe el Producto, quiere decir que se creo exitosamente, se enviara el mensaje 'se creo exitosamente', acompañado del nuevo producto y el codigo 201. Si el producto no existe se enviara una notificacion de error 'Ocurrio un error al crear el producto' con el codigo 401.
+
 
        
 
