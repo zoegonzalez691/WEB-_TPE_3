@@ -404,16 +404,45 @@ En caso de no existir el producto con el id solicitado se retornara el mensaje '
 Para poder acceder a utilizar estos metodos será obligatorio que el usuario esté autorizado *ver Authorization*.
 
 ## Metodo DELETE:
-Para eliminar un producto se utilizara el endpoint _producto/:id_ con el metodo _delete_, por ejemplo, _producto/3_, en caso de efectuarse la eliminacion se me retornara un mensaje 'se pudo eliminar correctamente el producto con el id:'.$id y el codigo 200, en caso de que el producto a eliminar no existiera me retornaran un mensaje de 'el producto con el id:'.$id .no existe con el codigo 404.
+Para eliminar un producto se utilizara el endpoint _producto/:id_ con el metodo _delete_, por ejemplo, _producto/3_, en caso de efectuarse la eliminacion se me retornara un mensaje y el codigo 200:
+    
+    "Se pudo eliminar correctamente el producto con el id:.$id "
+ 
+ En caso de que el producto a eliminar no existiera me retornaran un mensaje con el codigo 404:
+
+    "El producto con el id:'.$id .no existe"
 
 ## Metodo PUT:
-Para modificar un producto se hará mediante el endpoint _producto/:id_ el cual indicara cual es el producto a modificar,con el metodo _PUT_, en caso  de existir el producto se tomaran todos los datos que el usuario envia mediante el body para efectuar la modificacion, en caso que haya algun campo vacio  se notificara con el mensaje 'Faltan completar campos', y el codigo 401.
-Si estan todos los datos correctamente se confirmara la modificacion mostrando el producto modificado y el codigo 200. En caso de que ocurra cualquier error inseperado con la modificacion se enviara un mensaje 'Ocurrio un error al modificar el producto' y el codigo 500.
-Si el producto a modificar no existe se enviara el mensaje 'No existe el producto con el id'.$id, con el codigo 404.
+Para modificar un producto se hará mediante el endpoint _producto/:id_ el cual indicara cual es el producto a modificar,con el metodo _PUT_, en caso  de existir el producto se tomaran todos los datos que el usuario envia mediante el body para efectuar la modificacion.
+
+En caso que haya algun campo vacio  se notificara con el mensaje y el codigo 401:
+
+    "Faltan completar campos"
+
+Si estan todos los datos correctamente se confirmará la modificacion mostrando el producto modificado y el codigo 200. 
+
+En caso de que ocurra cualquier error inseperado con la modificacion se enviara un mensaje y el codigo 500. :
+
+    "Ocurrio un error al modificar el producto"
+
+Si el producto a modificar no existe se enviara el mensaje con el codigo 404:
+
+    "No existe el producto con el id.$id"
 
 ## Metodo POST: 
-Para añadir un nuevo producto se usara el endpoint _api/producto_ con el metodo _POST_, se tomaran los datos que el usuario haya ingresado desde el body, en caso de existir algun campo vacio se enviara un mensaje 'Faltan completar campos ' y el codigo 401.
-Si existe el Producto, quiere decir que se creo exitosamente, se enviara el mensaje 'se creo exitosamente', acompañado del nuevo producto y el codigo 201. Si el producto no existe se enviara una notificacion de error 'Ocurrio un error al crear el producto' con el codigo 401.
+Para añadir un nuevo producto se usara el endpoint _api/producto_ con el metodo _POST_, se tomaran los datos que el usuario haya ingresado desde el body.
+
+En caso de existir algun campo vacio se enviara un mensaje y el codigo 401:
+
+    "Faltan completar campos"
+
+Si existe el Producto, quiere decir que se creo exitosamente, se enviara el mensaje, acompañado del nuevo producto y el codigo 201:
+
+    "Se creo exitosamente"
+
+Si el producto no existe se enviara una notificacion de error con el codigo 401:
+
+    "Ocurrio un error al crear el producto"
 
 
        
