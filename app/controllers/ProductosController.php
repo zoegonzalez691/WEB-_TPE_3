@@ -178,6 +178,7 @@ class ProductosController{
         if (!$Token) {
             return $this->view->response("No se pudo autenticar el token", 404);
         }
+        
         $id= $req->params->id;
         $producto= $this->model->traerPorID($id);
         if(!$producto){
@@ -188,11 +189,11 @@ class ProductosController{
         $precio= $req->body->precio;
         $destacado= $req->body->destacado;
         $imagen= $req->body->imagen;
-        $categoria= $req->body->fk_categoria;
-        if(empty($descripcion)|| empty($nombre)|| empty($precio)||empty($detacado)|| empty($imagen)|| empty($categoria)){
+        //$categoria= $req->body->fk_categoria;
+        if(empty($descripcion)|| empty($nombre)|| empty($precio)||empty($destacado)|| empty($imagen)){
            return $this->view->response("Faltan completar campos", 401);
         }
-        $modificado= $this->model->guardarCambiosProducto($nombre,$descripcion,$precio,$destacado,$imagen,$categoria,$id);
+        $modificado= $this->model->guardarCambiosProducto($nombre,$descripcion,$precio,$destacado,$imagen,$id);
         if($modificado){
         $this->view->response($modificado, 200);
         }

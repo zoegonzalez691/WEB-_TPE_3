@@ -167,12 +167,13 @@ require_once 'config/config.php';
       }
 
    
-      public function guardarCambiosProducto($nombre,$descripcion,$precio,$destacado,$imagen,$categoria,$id){
+      public function guardarCambiosProducto($nombre,$descripcion,$precio,$destacado,$imagen,$id){
          $db= $this->crearConexion();
         
-         $sentencia= $db->prepare("UPDATE productos SET `nombre`= ?, `descripcion`= ?,`imagen`=?,`fk_categoria`=?,`precio`= ?,`destacado`=? WHERE id_producto= ?");
+         $sentencia= $db->prepare("UPDATE productos SET `nombre`= ?
+         , `descripcion`= ?,`imagen`=?,`precio`= ?,`destacado`=? WHERE id_producto= ?");
          try{
-            $sentencia->execute([$nombre,$descripcion,$imagen,$categoria,$precio,$destacado,$id]);
+            $sentencia->execute([$nombre,$descripcion,$imagen,$precio,$destacado,$id]);
             $productoModificado= $sentencia->fetch(PDO::FETCH_OBJ);
       
             return $productoModificado;
