@@ -1,7 +1,7 @@
 <?php
 require_once 'app/models/user.model.php';
 require_once 'app/views/user.view.php';
-//require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 use \Firebase\JWT\JWT;
 
